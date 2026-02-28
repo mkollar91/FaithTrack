@@ -1,0 +1,106 @@
+@*
+    FaithTrack — Views/Resources/Details.cshtml
+    View Resource (read-only). Implements Architecture Plan
+    Figure 13 (View Resource Wireframe):
+      - Resource Title, Category, Description, URL displayed
+      - Edit button and Back to Resources button
+    User Story 4 (Sprint 1): View a list of resources (detail view).
+
+    Author  : Matthew Kollar
+    Course  : CST-451 — Grand Canyon University
+*@
+@model FaithTrack.ViewModels.ResourceViewModel
+
+@{
+    ViewData["Title"] = "View Resource";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Resource" asp-action="Index">Resources</a>
+            </li>
+            <li class="breadcrumb-item active">View Resource</li>
+        </ol>
+    </nav>
+    <!-- Page header with Edit button — matches Fig. 13 wireframe -->
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-file-text me-2"></i>View Resource
+        </h2>
+        <a asp-action="Edit" asp-route-id="@Model.ResourceId"
+           class="btn btn-outline-warning">
+            <i class="bi bi-pencil me-1"></i>Edit
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+
+        <!-- Resource Title — matches Fig. 13 wireframe label/value layout -->
+        <div class="mb-3">
+            <label class="form-label text-uppercase text-muted small fw-bold">
+                Resource Title:
+            </label>
+            <div class="form-control bg-light">@Model.Title</div>
+        </div>
+
+        <!-- Category -->
+        <div class="mb-3">
+            <label class="form-label text-uppercase text-muted small fw-bold">
+                Category:
+            </label>
+            <div class="form-control bg-light">
+                <span class="badge bg-secondary fs-6">@Model.CategoryName</span>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+            <label class="form-label text-uppercase text-muted small fw-bold">
+                Description:
+            </label>
+            <div class="form-control bg-light" style="min-height:80px; white-space:pre-wrap;">
+                @(string.IsNullOrWhiteSpace(Model.Description) ? "No description provided." : Model.Description)
+            </div>
+        </div>
+
+        <!-- URL / Reference -->
+        <div class="mb-4">
+            <label class="form-label text-uppercase text-muted small fw-bold">
+                Resource URL / Reference:
+            </label>
+            <div class="form-control bg-light">
+                @if (!string.IsNullOrWhiteSpace(Model.Url))
+                {
+                    <a href="@Model.Url" target="_blank" rel="noopener noreferrer">
+                        @Model.Url
+                    </a>
+                }
+                else
+                {
+                    <span class="text-muted">No URL provided.</span>
+                }
+            </div>
+        </div>
+
+        <!-- Metadata footer — matches Fig. 13 wireframe bottom info -->
+        <div class="text-muted small border-top pt-3 d-flex justify-content-between">
+            <span>Date Added: @Model.CreatedDate.ToString("MM/dd/yyyy")</span>
+            @if (Model.UpdatedDate.HasValue)
+            {
+                <span>Last Modified: @Model.UpdatedDate.Value.ToString("MM/dd/yyyy")</span>
+            }
+        </div>
+
+    </div>
+</div>
+
+<!-- Back to Resources — matches Fig. 13 wireframe -->
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Resources
+    </a>
+</div>

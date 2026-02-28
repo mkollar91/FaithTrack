@@ -1,0 +1,116 @@
+@*
+    FaithTrack — Views/Resources/Create.cshtml
+    Add Resource form. Implements Architecture Plan
+    Figure 11 (Add Resource Wireframe):
+      - Title field (required *)
+      - Category dropdown (required *)
+      - Description textarea (required *)
+      - Resource URL / Reference (optional)
+      - Save and Cancel buttons
+    User Story 5 (Sprint 1): Add a new faith-based resource.
+
+    Author  : Matthew Kollar
+    Course  : CST-451 — Grand Canyon University
+*@
+@model FaithTrack.ViewModels.ResourceViewModel
+
+@{
+    ViewData["Title"] = "Add Resource";
+}
+
+<!-- Page Header -->
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Resource" asp-action="Index">Resources</a>
+            </li>
+            <li class="breadcrumb-item active">Add Resource</li>
+        </ol>
+    </nav>
+    <h2 class="fw-bold text-primary">
+        <i class="bi bi-plus-circle me-2"></i>Add Resource
+    </h2>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+
+        <!-- Validation Summary — inline errors per NFR (p.26) -->
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger"
+             style="display:@(ViewContext.ModelState.IsValid ? "none" : "block")">
+        </div>
+
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <!-- Title — required, matches Fig. 11 wireframe -->
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label fw-semibold">
+                    Title: <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Title"
+                       class="form-control"
+                       placeholder="Enter resource title" />
+                <span asp-validation-for="Title" class="text-danger small"></span>
+            </div>
+
+            <!-- Category Dropdown — required, matches Fig. 11 wireframe -->
+            <div class="mb-3">
+                <label asp-for="CategoryId" class="form-label fw-semibold">
+                    Category: <span class="text-danger">*</span>
+                </label>
+                <select asp-for="CategoryId"
+                        asp-items="Model.Categories"
+                        class="form-select">
+                    <option value="">-- Select a category --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger small"></span>
+            </div>
+
+            <!-- Description — matches Fig. 11 wireframe -->
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label fw-semibold">
+                    Description: <span class="text-danger">*</span>
+                </label>
+                <textarea asp-for="Description"
+                          class="form-control"
+                          rows="4"
+                          placeholder="Enter a detailed description..."></textarea>
+                <span asp-validation-for="Description" class="text-danger small"></span>
+            </div>
+
+            <!-- URL — optional, matches Fig. 11 wireframe -->
+            <div class="mb-4">
+                <label asp-for="Url" class="form-label fw-semibold">
+                    Resource URL / Reference:
+                    <span class="text-muted fw-normal">(optional)</span>
+                </label>
+                <input asp-for="Url"
+                       class="form-control"
+                       placeholder="https://example.com or reference text" />
+                <span asp-validation-for="Url" class="text-danger small"></span>
+            </div>
+
+            <small class="text-muted d-block mb-3">
+                <span class="text-danger">*</span> Required Fields
+            </small>
+
+            <!-- Save / Cancel — matches Fig. 11 wireframe -->
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-floppy me-1"></i>Save
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

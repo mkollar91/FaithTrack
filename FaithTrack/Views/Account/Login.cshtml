@@ -1,0 +1,106 @@
+@*
+    FaithTrack — Views/Account/Login.cshtml
+    Login page implementing the wireframe defined in
+    Architecture Plan Figure 8 (Login Page):
+      - Validation message area at top
+      - Email input field
+      - Password input field
+      - Remember Me checkbox
+      - Login button
+      - Register and Forgot Password links
+    Authentication flow per Architecture Plan Figure 1.
+
+    Author  : Matthew Kollar
+    Course  : CST-451 — Grand Canyon University
+*@
+@model FaithTrack.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+
+        <!-- FaithTrack Header — matches Fig. 8 wireframe -->
+        <div class="text-center mb-4">
+            <h1 class="display-6 fw-bold text-primary">
+                <i class="bi bi-book-half me-2"></i>FaithTrack
+            </h1>
+            <p class="text-muted">Sign in to manage your faith-based resources</p>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <h4 class="card-title mb-3">Login</h4>
+
+                <!-- Validation Summary — matches the validation message
+                     area shown in the Login wireframe (Fig. 8) -->
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger" role="alert"
+                     style="display:@(ViewContext.ModelState.IsValid ? "none" : "block")">
+                </div>
+
+                <form asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+                    <!-- Email Field -->
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold">Email:</label>
+                        <input asp-for="Email"
+                               class="form-control"
+                               placeholder="email@example.com"
+                               autocomplete="email" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-semibold">Password:</label>
+                        <input asp-for="Password"
+                               class="form-control"
+                               placeholder="••••••••"
+                               autocomplete="current-password" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Remember Me Checkbox — matches Fig. 8 wireframe -->
+                    <div class="mb-3 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label">Remember Me</label>
+                    </div>
+
+                    <!-- Login Button — matches Fig. 8 wireframe -->
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                        </button>
+                    </div>
+
+                    <!-- Register and Forgot Password links — matches Fig. 8 -->
+                    <div class="d-flex justify-content-between">
+                        <a asp-controller="Account" asp-action="Register"
+                           class="text-decoration-none">Register</a>
+                        <a href="#" class="text-decoration-none text-muted">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+        <div class="text-center mt-3 text-muted small">
+            FaithTrack &copy; 2026
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

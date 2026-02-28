@@ -1,0 +1,79 @@
+@*
+    FaithTrack — Views/Account/Register.cshtml
+    User registration form. Sprint 2 — US-14.
+    Included as a working draft in Sprint 1 so the
+    Register link on the Login page functions correctly.
+
+    Author  : Matthew Kollar
+    Course  : CST-451 — Grand Canyon University
+*@
+@model FaithTrack.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+
+        <div class="text-center mb-4">
+            <h1 class="display-6 fw-bold text-primary">
+                <i class="bi bi-book-half me-2"></i>FaithTrack
+            </h1>
+            <p class="text-muted">Create your account to get started</p>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <h4 class="card-title mb-3">Create Account</h4>
+
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger" role="alert"
+                     style="display:@(ViewContext.ModelState.IsValid ? "none" : "block")">
+                </div>
+
+                <form asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold">Email:</label>
+                        <input asp-for="Email" class="form-control"
+                               placeholder="email@example.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-semibold">Password:</label>
+                        <input asp-for="Password" class="form-control"
+                               placeholder="Min. 8 characters" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label fw-semibold">Confirm Password:</label>
+                        <input asp-for="ConfirmPassword" class="form-control"
+                               placeholder="Re-enter password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-person-plus me-1"></i>Create Account
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <a asp-controller="Account" asp-action="Login"
+                           class="text-decoration-none">Already have an account? Login</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
