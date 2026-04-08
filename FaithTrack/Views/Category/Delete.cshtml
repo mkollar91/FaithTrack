@@ -1,0 +1,89 @@
+@*
+    FaithTrack — Views/Category/Delete.cshtml
+    Delete Confirmation page. Sprint 2 — US-11: Delete a category.
+    Shows a warning if resources are assigned to this category.
+
+    Author  : Matthew Kollar
+    Course  : CST-452 — Grand Canyon University
+*@
+@model FaithTrack.Models.Category
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Category" asp-action="Index">Categories</a>
+            </li>
+            <li class="breadcrumb-item active">Delete Category</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger shadow">
+            <div class="card-header bg-danger text-white text-center">
+                <h4 class="mb-0">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Delete Category
+                </h4>
+            </div>
+            <div class="card-body text-center p-4">
+
+                <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex
+                            align-items-center justify-content-center mb-3"
+                     style="width:60px; height:60px;">
+                    <i class="bi bi-exclamation-circle text-danger fs-3"></i>
+                </div>
+
+                <p class="fw-semibold">Are you sure you want to delete this category?</p>
+
+                <div class="card bg-light border mb-3 text-start">
+                    <div class="card-body">
+                        <p class="mb-1 fw-bold">@Model.Name</p>
+                        <p class="mb-0 text-muted small">
+                            @(string.IsNullOrWhiteSpace(Model.Description)
+                                ? "No description."
+                                : Model.Description)
+                        </p>
+                    </div>
+                </div>
+
+                @if (Model.Resources != null && Model.Resources.Any())
+                {
+                    <div class="alert alert-warning text-start">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Warning:</strong> This category has
+                        <strong>@Model.Resources.Count resource(s)</strong> assigned to it.
+                        You must reassign or delete those resources before deleting this category.
+                    </div>
+                }
+                else
+                {
+                    <p class="text-danger fw-semibold">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        This action cannot be undone!
+                    </p>
+                }
+
+                <div class="d-flex gap-3 justify-content-center mt-3">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                    <form asp-action="Delete"
+                          asp-route-id="@Model.CategoryId"
+                          method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="bi bi-trash me-1"></i>Delete Permanently
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

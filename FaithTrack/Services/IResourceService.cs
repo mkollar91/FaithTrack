@@ -7,7 +7,7 @@
 // class) to enforce loose coupling via DI.
 //
 // Author  : Matthew Kollar
-// Course  : CST-451 — Grand Canyon University
+// Course  : CST-452 — Grand Canyon University
 // =============================================================
 
 using FaithTrack.ViewModels;
@@ -75,5 +75,16 @@ namespace FaithTrack.Services
         /// <param name="selectedId">Pre-selected category ID for Edit.</param>
         /// <returns>A SelectList of Category name/value pairs.</returns>
         Task<SelectList> GetCategoriesSelectListAsync(int? selectedId = null);
+
+        /// <summary>
+        /// Searches resources by keyword in title or description
+        /// for the specified user. Sprint 2 — US-13: Search resources.
+        /// Delegates to IResourceRepository.SearchAsync() which uses
+        /// EF Core parameterized LIKE queries (SQL injection safe).
+        /// </summary>
+        /// <param name="userId">The authenticated user's ID.</param>
+        /// <param name="query">The keyword search string.</param>
+        /// <returns>Matching ResourceViewModels for the user.</returns>
+        Task<IEnumerable<ResourceViewModel>> SearchResourcesAsync(string userId, string query);
     }
 }

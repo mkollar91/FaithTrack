@@ -1,14 +1,12 @@
 @*
     FaithTrack — Views/Resources/Index.cshtml
-    Resources List page. Implements Architecture Plan
-    Figure 10 (Resources List Wireframe):
-      - Page title "Resources" with "+ Add Resource" button
-      - Table: Title | Category | Date Added | Actions
-      - Action buttons: View | Edit | Delete per row
-    User Story 4 (Sprint 1): View a list of faith-based resources.
+    Resources List page with Search/Filter.
+    Sprint 1 — US-4: View list of resources.
+    Sprint 2 — US-12: Filter by category.
+              — US-13: Search by keyword.
 
     Author  : Matthew Kollar
-    Course  : CST-451 — Grand Canyon University
+    Course  : CST-452 — Grand Canyon University
 *@
 @model IEnumerable<FaithTrack.ViewModels.ResourceViewModel>
 
@@ -16,35 +14,63 @@
     ViewData["Title"] = "Resources";
 }
 
-<!-- Page Header — matches Fig. 10 wireframe -->
-<div class="d-flex justify-content-between align-items-center mb-4">
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="fw-bold text-primary">
         <i class="bi bi-collection me-2"></i>Resources
     </h2>
-    <!-- "+ Add Resource" button — matches Fig. 10 wireframe -->
     <a asp-action="Create" class="btn btn-success">
         <i class="bi bi-plus-circle me-1"></i>+ Add Resource
     </a>
 </div>
 
+<!-- Search Bar — US-13 -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body py-3">
+        <form asp-action="Index" method="get" class="d-flex gap-2">
+            <input type="text"
+                   name="search"
+                   value="@ViewData["CurrentSearch"]"
+                   class="form-control"
+                   placeholder="Search by title or description..." />
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-search me-1"></i>Search
+            </button>
+            @if (ViewData["CurrentSearch"] != null)
+            {
+                <a asp-action="Index" class="btn btn-outline-secondary px-3">
+                    <i class="bi bi-x-circle me-1"></i>Clear
+                </a>
+            }
+        </form>
+    </div>
+</div>
+
 @if (!Model.Any())
 {
-    <!-- Empty state — shown when user has no resources yet -->
     <div class="card shadow-sm">
         <div class="card-body text-center py-5">
             <i class="bi bi-collection display-4 text-muted mb-3 d-block"></i>
-            <h5 class="text-muted">No resources yet</h5>
-            <p class="text-muted">Click "+ Add Resource" to create your first faith-based resource.</p>
-            <a asp-action="Create" class="btn btn-primary mt-2">
-                <i class="bi bi-plus-circle me-1"></i>Add Your First Resource
-            </a>
+            @if (ViewData["CurrentSearch"] != null)
+            {
+                <h5 class="text-muted">No resources matched "@ViewData["CurrentSearch"]"</h5>
+                <a asp-action="Index" class="btn btn-outline-primary mt-2">
+                    <i class="bi bi-arrow-left me-1"></i>Back to All Resources
+                </a>
+            }
+            else
+            {
+                <h5 class="text-muted">No resources yet</h5>
+                <p class="text-muted">Click "+ Add Resource" to create your first faith-based resource.</p>
+                <a asp-action="Create" class="btn btn-primary mt-2">
+                    <i class="bi bi-plus-circle me-1"></i>Add Your First Resource
+                </a>
+            }
         </div>
     </div>
 }
 else
 {
-    <!-- Resources Table — matches Fig. 10 wireframe layout:
-         Title | Category | Date Added | Actions (View/Edit/Delete) -->
     <div class="card shadow-sm">
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
@@ -60,16 +86,13 @@ else
                     @foreach (var resource in Model)
                     {
                         <tr>
-                            <td class="align-middle fw-semibold">
-                                @resource.Title
-                            </td>
+                            <td class="align-middle fw-semibold">@resource.Title</td>
                             <td class="align-middle">
                                 <span class="badge bg-secondary">@resource.CategoryName</span>
                             </td>
                             <td class="align-middle text-muted small">
                                 @resource.CreatedDate.ToString("MM/dd/yyyy")
                             </td>
-                            <!-- Action buttons: View | Edit | Delete — matches Fig. 10 -->
                             <td class="align-middle text-center">
                                 <a asp-action="Details"
                                    asp-route-id="@resource.ResourceId"
@@ -94,6 +117,10 @@ else
         </div>
         <div class="card-footer text-muted small text-end">
             Showing @Model.Count() resource(s)
+            @if (ViewData["CurrentSearch"] != null)
+            {
+                <span>matching "@ViewData["CurrentSearch"]"</span>
+            }
         </div>
     </div>
 }

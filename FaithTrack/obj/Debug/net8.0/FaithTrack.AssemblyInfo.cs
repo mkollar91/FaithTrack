@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FaithTrack")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68851ec3922f3b1319ed8f4b048d01f6d577be17")]
 [assembly: System.Reflection.AssemblyProductAttribute("FaithTrack")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FaithTrack")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

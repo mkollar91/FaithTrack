@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project I\\Milestone 4 Development Phase\\FaithTrack\\FaithTrack\\FaithTrack.csproj": {}
+    "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project II\\Week 6\\FaithTrack\\FaithTrack\\FaithTrack.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project I\\Milestone 4 Development Phase\\FaithTrack\\FaithTrack\\FaithTrack.csproj": {
+    "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project II\\Week 6\\FaithTrack\\FaithTrack\\FaithTrack.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project I\\Milestone 4 Development Phase\\FaithTrack\\FaithTrack\\FaithTrack.csproj",
+        "projectUniqueName": "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project II\\Week 6\\FaithTrack\\FaithTrack\\FaithTrack.csproj",
         "projectName": "FaithTrack",
-        "projectPath": "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project I\\Milestone 4 Development Phase\\FaithTrack\\FaithTrack\\FaithTrack.csproj",
+        "projectPath": "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project II\\Week 6\\FaithTrack\\FaithTrack\\FaithTrack.csproj",
         "packagesPath": "C:\\Users\\mrkfi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project I\\Milestone 4 Development Phase\\FaithTrack\\FaithTrack\\obj\\",
+        "outputPath": "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project II\\Week 6\\FaithTrack\\FaithTrack\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "r7ndHks5G9A=",
+  "dgSpecHash": "5kcC+4TXomU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project I\\Milestone 4 Development Phase\\FaithTrack\\FaithTrack\\FaithTrack.csproj",
+  "projectFilePath": "C:\\Users\\mrkfi\\OneDrive - Grand Canyon University\\Documents\\GCU Classes\\CST-451 Senior Project II\\Week 6\\FaithTrack\\FaithTrack\\FaithTrack.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mrkfi\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\mrkfi\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",

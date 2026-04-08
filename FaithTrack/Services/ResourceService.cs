@@ -5,9 +5,10 @@
 // Application Layer — ResourceService.
 // Encapsulates validation, ViewModel↔Entity mapping, and
 // delegates all persistence to IResourceRepository.
+// Sprint 2: SearchResourcesAsync added for US-13.
 //
 // Author  : Matthew Kollar
-// Course  : CST-451 — Grand Canyon University
+// Course  : CST-452 — Grand Canyon University
 // =============================================================
 
 using FaithTrack.Models;
@@ -19,10 +20,11 @@ namespace FaithTrack.Services
 {
     /// <summary>
     /// Concrete implementation of IResourceService.
-    /// Injected into ResourceController via DI (Program.cs).
+    /// Injected into ResourcesController via DI (Program.cs).
     /// Implements the business rules and mapping logic described
     /// in the Architecture Plan Application Layer (p.7) and
     /// the Add Resource Sequence Diagram (Fig. 16).
+    /// Sprint 2 adds SearchResourcesAsync for keyword search (US-13).
     /// </summary>
     public class ResourceService : IResourceService
     {
@@ -62,7 +64,6 @@ namespace FaithTrack.Services
                 "ResourceService: GetAllResourcesAsync for user {UserId}.", userId);
 
             var resources = await _resourceRepo.GetByUserIdAsync(userId);
-            // Map each entity to a ViewModel for the Index view
             return resources.Select(r => MapToViewModel(r));
         }
 
@@ -88,17 +89,13 @@ namespace FaithTrack.Services
             _logger.LogInformation(
                 "ResourceService: CreateResourceAsync called for '{Title}'.", vm.Title);
 
-            // Business rule validation before mapping to entity
             if (!ValidateResource(vm))
             {
                 _logger.LogWarning("ResourceService: Validation failed for Create.");
                 return false;
             }
 
-            // Map ViewModel → Entity (Add Resource Workflow, Fig. 16 step 7)
             var entity = MapToEntity(vm, userId);
-
-            // Persist via repository (Fig. 16 step 9 — AddAsync)
             await _resourceRepo.AddAsync(entity);
 
             _logger.LogInformation(
@@ -118,8 +115,6 @@ namespace FaithTrack.Services
                 return false;
             }
 
-            // Retrieve the existing entity so we preserve CreatedByUserId
-            // and CreatedDate — only user-editable fields are updated.
             var existing = await _resourceRepo.GetByIdAsync(vm.ResourceId);
             if (existing == null)
             {
@@ -128,7 +123,6 @@ namespace FaithTrack.Services
                 return false;
             }
 
-            // Update only the user-editable fields
             existing.Title       = vm.Title;
             existing.Description = vm.Description;
             existing.Url         = vm.Url;
@@ -158,6 +152,20 @@ namespace FaithTrack.Services
             return new SelectList(categories, "CategoryId", "Name", selectedId);
         }
 
+        /// <inheritdoc/>
+        public async Task<IEnumerable<ResourceViewModel>> SearchResourcesAsync(
+            string userId, string query)
+        {
+            _logger.LogInformation(
+                "ResourceService: SearchResourcesAsync for user {UserId}, query '{Query}'.",
+                userId, query);
+
+            // Delegates to repository SearchAsync which uses EF Core
+            // parameterized LIKE query — safe against SQL injection (NFR p.26).
+            var resources = await _resourceRepo.SearchAsync(userId, query);
+            return resources.Select(r => MapToViewModel(r));
+        }
+
         // ── Private Helpers ──────────────────────────────────
 
         /// <summary>
@@ -178,9 +186,6 @@ namespace FaithTrack.Services
         /// <summary>
         /// Maps a Resource domain entity to a ResourceViewModel
         /// for use in the Presentation Layer views.
-        /// Called in GetAllResourcesAsync and GetResourceByIdAsync.
-        /// Implements the MapToViewModel method defined in the
-        /// UML Class Diagram Application Layer (Fig. 15).
         /// </summary>
         /// <param name="entity">The Resource entity to map.</param>
         /// <returns>A populated ResourceViewModel.</returns>
@@ -203,8 +208,6 @@ namespace FaithTrack.Services
         /// <summary>
         /// Maps a ResourceViewModel to a new Resource entity
         /// for persistence. Sets CreatedByUserId and CreatedDate.
-        /// Implements the MapToEntity method defined in the
-        /// UML Class Diagram Application Layer (Fig. 15).
         /// </summary>
         /// <param name="vm">The ViewModel to map.</param>
         /// <param name="userId">The authenticated user's ID.</param>

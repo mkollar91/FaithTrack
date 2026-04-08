@@ -1,14 +1,15 @@
 // =============================================================
-// FaithTrack — Controllers/ResourceController.cs
+// FaithTrack — Controllers/ResourcesController.cs
 // Handles all Resource CRUD HTTP requests and delegates
 // business logic to IResourceService.
 // Defined in Architecture Plan UML Class Diagram (Fig. 15),
-// Presentation Layer — ResourceController.
+// Presentation Layer — ResourcesController.
 // CRUD workflow matches Architecture Plan Fig. 2 (CRUD Process
 // Flow) and Fig. 6 (Add Resource UML Activity Diagram).
+// Sprint 2: Index action updated to support keyword search (US-13).
 //
 // Author  : Matthew Kollar
-// Course  : CST-451 — Grand Canyon University
+// Course  : CST-452 — Grand Canyon University
 // =============================================================
 
 using FaithTrack.Services;
@@ -29,6 +30,7 @@ namespace FaithTrack.Controllers
     /// Layered Architecture (Architecture Plan p.7).
     /// User data isolation is enforced by passing the current
     /// user's ID to every service method (NFR — Authorization, p.26).
+    /// Sprint 2: Index supports optional keyword search (US-13).
     /// </summary>
     [Authorize]
     public class ResourcesController : Controller
@@ -59,19 +61,34 @@ namespace FaithTrack.Controllers
 
         /// <summary>
         /// GET /Resources/Index
-        /// Retrieves all resources owned by the current authenticated
-        /// user and returns the Resources List view.
-        /// Implements the View branch of the CRUD process flow
-        /// (Architecture Plan Fig. 2) and the Resources List
-        /// wireframe (Fig. 10).
+        /// Retrieves resources for the current authenticated user
+        /// with optional keyword search filtering.
+        /// Sprint 1 — US-4: View list of resources.
+        /// Sprint 2 — US-13: Search resources by keyword.
+        /// If a search query is provided, delegates to
+        /// SearchResourcesAsync; otherwise returns all resources.
         /// </summary>
-        public async Task<IActionResult> Index()
+        /// <param name="search">Optional keyword search string.</param>
+        public async Task<IActionResult> Index(string? search)
         {
             var userId = GetCurrentUserId();
             _logger.LogInformation(
-                "ResourceController: Index requested by user {UserId}.", userId);
+                "ResourceController: Index requested by user {UserId}, search='{Search}'.",
+                userId, search);
 
-            var resources = await _resourceService.GetAllResourcesAsync(userId);
+            IEnumerable<ResourceViewModel> resources;
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                // Sprint 2 — US-13: keyword search
+                resources = await _resourceService.SearchResourcesAsync(userId, search);
+                ViewData["CurrentSearch"] = search;
+            }
+            else
+            {
+                resources = await _resourceService.GetAllResourcesAsync(userId);
+            }
+
             return View(resources);
         }
 
@@ -113,7 +130,6 @@ namespace FaithTrack.Controllers
 
             var vm = new ResourceViewModel
             {
-                // Populate the category dropdown before returning the view
                 Categories = await _resourceService.GetCategoriesSelectListAsync()
             };
             return View(vm);
@@ -124,11 +140,7 @@ namespace FaithTrack.Controllers
         /// Validates the submitted form, calls the service to
         /// create the resource, and redirects to the Index view.
         /// Implements the Add branch of the CRUD process flow (Fig. 2)
-        /// and the Add Resource Sequence Diagram (Architecture Plan Fig. 16):
-        ///   Step 5  — Model binding and ModelState validation
-        ///   Step 6  — Invoke CreateResourceAsync (service method)
-        ///   Step 14 — RedirectToAction → Resource List
-        ///   Step 16 — Return View with errors if validation fails
+        /// and the Add Resource Sequence Diagram (Architecture Plan Fig. 16).
         /// [ValidateAntiForgeryToken] prevents CSRF (NFR Security p.26).
         /// </summary>
         /// <param name="vm">The bound ResourceViewModel from the form.</param>
@@ -138,7 +150,6 @@ namespace FaithTrack.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Re-populate dropdown before returning the view with errors
                 vm.Categories = await _resourceService.GetCategoriesSelectListAsync(vm.CategoryId);
                 return View(vm);
             }
@@ -151,7 +162,8 @@ namespace FaithTrack.Controllers
             var success = await _resourceService.CreateResourceAsync(vm, userId);
             if (!success)
             {
-                ModelState.AddModelError(string.Empty, "An error occurred saving the resource. Please try again.");
+                ModelState.AddModelError(string.Empty,
+                    "An error occurred saving the resource. Please try again.");
                 vm.Categories = await _resourceService.GetCategoriesSelectListAsync(vm.CategoryId);
                 return View(vm);
             }
@@ -177,7 +189,6 @@ namespace FaithTrack.Controllers
             var vm = await _resourceService.GetResourceByIdAsync(id);
             if (vm == null) return NotFound();
 
-            // Populate category dropdown with the current category pre-selected
             vm.Categories = await _resourceService.GetCategoriesSelectListAsync(vm.CategoryId);
             return View(vm);
         }
@@ -194,7 +205,6 @@ namespace FaithTrack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ResourceViewModel vm)
         {
-            // Guard: ensure the route ID matches the form's ResourceId
             if (id != vm.ResourceId) return BadRequest();
 
             if (!ModelState.IsValid)
@@ -209,7 +219,8 @@ namespace FaithTrack.Controllers
             var success = await _resourceService.UpdateResourceAsync(vm);
             if (!success)
             {
-                ModelState.AddModelError(string.Empty, "An error occurred updating the resource.");
+                ModelState.AddModelError(string.Empty,
+                    "An error occurred updating the resource.");
                 vm.Categories = await _resourceService.GetCategoriesSelectListAsync(vm.CategoryId);
                 return View(vm);
             }
@@ -243,7 +254,6 @@ namespace FaithTrack.Controllers
         /// Permanently deletes the resource after user confirmation
         /// and redirects to the Index view.
         /// Implements the Delete branch of the CRUD process flow (Fig. 2).
-        /// Action name "DeleteConfirmed" avoids ambiguity with the GET Delete.
         /// </summary>
         /// <param name="id">The ResourceId to permanently delete.</param>
         [HttpPost, ActionName("Delete")]
@@ -266,7 +276,6 @@ namespace FaithTrack.Controllers
         /// current ClaimsPrincipal. Used to scope all data access
         /// to the current user (NFR — Authorization, p.26).
         /// </summary>
-        /// <returns>The current user's Identity ID string.</returns>
         private string GetCurrentUserId()
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;

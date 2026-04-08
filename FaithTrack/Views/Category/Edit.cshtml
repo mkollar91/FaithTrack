@@ -1,0 +1,78 @@
+@*
+    FaithTrack — Views/Category/Edit.cshtml
+    Edit Category form. Sprint 2 — US-10: Edit an existing category.
+
+    Author  : Matthew Kollar
+    Course  : CST-452 — Grand Canyon University
+*@
+@model FaithTrack.Models.Category
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Category" asp-action="Index">Categories</a>
+            </li>
+            <li class="breadcrumb-item active">Edit Category</li>
+        </ol>
+    </nav>
+    <h2 class="fw-bold text-primary">
+        <i class="bi bi-pencil-square me-2"></i>Edit Category
+    </h2>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger"
+             style="display:@(ViewContext.ModelState.IsValid ? "none" : "block")">
+        </div>
+
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="CategoryId" />
+
+            <!-- Category Name -->
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label fw-semibold">
+                    Category Name: <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label asp-for="Description" class="form-label fw-semibold">
+                    Description:
+                    <span class="text-muted fw-normal">(optional)</span>
+                </label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger small"></span>
+            </div>
+
+            <small class="text-muted d-block mb-3">
+                <span class="text-danger">*</span> Required Fields
+            </small>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-floppy me-1"></i>Save Changes
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
